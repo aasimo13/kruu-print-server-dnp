@@ -158,6 +158,7 @@ chmod -R 777 "$HOTFOLDER_ROOT"
 say "Installing app + watcher into $APP_DIR"
 install -o "$TARGET_USER" -g "$TARGET_USER" -m 644 "$REPO_DIR/app.py"           "$APP_DIR/app.py"
 install -o "$TARGET_USER" -g "$TARGET_USER" -m 755 "$REPO_DIR/print-watcher.sh" "$APP_DIR/print-watcher.sh"
+install -o "$TARGET_USER" -g "$TARGET_USER" -m 755 "$REPO_DIR/sync-printer.sh"  "$APP_DIR/sync-printer.sh"
 
 say "Installing services"
 render_unit() {
@@ -168,10 +169,15 @@ render_unit() {
 }
 render_unit kruu-print-web.service
 render_unit print-watcher.service
-systemctl unmask print-watcher kruu-print-web >/dev/null 2>&1 || true
+render_unit kruu-printer-sync.service
+systemctl unmask print-watcher kruu-print-web kruu-printer-sync >/dev/null 2>&1 || true
 systemctl daemon-reload
-systemctl enable print-watcher kruu-print-web
+systemctl enable print-watcher kruu-print-web kruu-printer-sync
 systemctl restart print-watcher kruu-print-web
+
+say "Installing hotplug rule (re-points queues when a QW410 is plugged in)"
+install -m 644 "$REPO_DIR/99-kruu-qw410.rules" /etc/udev/rules.d/99-kruu-qw410.rules
+udevadm control --reload-rules || true
 
 say "Granting the reset button passwordless cupsenable/cancel/cups-restart"
 cat > /etc/sudoers.d/kruu-print <<EOF

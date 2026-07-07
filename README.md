@@ -51,6 +51,12 @@ Printer not detected:
 lsusb | grep -i nippon && sudo service cups restart
 ```
 
+Swapped in a different QW410 and nothing prints (jobs pile up, no error): the queues were pointed at the old printer's serial. This now fixes itself on boot and whenever you plug the printer in. To force it:
+
+```
+sudo bash ~/print-hotfolder/sync-printer.sh
+```
+
 ## Reinstall / update
 
 Pull the latest and re-run the installer. It's safe to run again, it skips the Gutenprint build if it's already there.
@@ -63,6 +69,7 @@ cd kruu-print-server-dnp && git pull && sudo bash install.sh
 
 - `app.py` - the web interface
 - `print-watcher.sh` - watches the hot folders and sends photos to the printer
+- `sync-printer.sh` - re-points the queues at the connected QW410 (runs on boot and USB plug-in)
 - `install.sh` - sets up everything on a fresh Pi
 - `uninstall.sh` - removes the services and queues
 - `SETUP-GUIDE.md` - the manual step-by-step, if you ever need to do it by hand

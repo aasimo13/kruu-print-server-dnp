@@ -1,0 +1,11 @@
+[Unit]
+Description=Point KRUU print queues at the connected QW410
+After=cups.service
+Wants=cups.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash __APP_DIR__/sync-printer.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1452", ATTR{idProduct}=="9201", RUN+="/bin/systemctl --no-block start kruu-printer-sync.service"
