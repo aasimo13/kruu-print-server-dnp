@@ -1,0 +1,15 @@
+[Unit]
+Description=KRUU Print Web Interface
+After=network.target cups.service
+
+[Service]
+# __USER__ and the paths below are filled in by install.sh at install time.
+ExecStart=/usr/bin/python3 __APP_DIR__/app.py
+WorkingDirectory=__APP_DIR__
+Environment=HOTFOLDER_ROOT=__HOTFOLDER_ROOT__
+Restart=always
+RestartSec=5
+User=__USER__
+
+[Install]
+WantedBy=multi-user.target
