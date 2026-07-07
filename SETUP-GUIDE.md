@@ -67,14 +67,14 @@ sudo rm -f /usr/lib/cups/filter/rastertogutenprint*
 sudo rm -f /usr/lib/cups/driver/gutenprint*
 
 cd ~
-wget https://www.shaftnet.org/~pizza/gutenprint-5.3.4-20230113102352.tar.xz
-tar -xJf gutenprint-5.3.4-*.tar.xz
-cd gutenprint-5.3.4-*
+wget https://downloads.sourceforge.net/project/gimp-print/gutenprint-5.3/5.3.5/gutenprint-5.3.5.tar.xz
+tar -xJf gutenprint-5.3.5.tar.xz
+cd gutenprint-5.3.5
 ./configure --without-doc
 make clean && make
 sudo make install
 cd ~
-rm -rf gutenprint-5.3.4-*
+rm -rf gutenprint-5.3.5
 ```
 
 ## STEP 4 - Finish Gutenprint config

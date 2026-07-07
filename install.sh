@@ -12,7 +12,9 @@
 #
 set -euo pipefail
 
-GUTENPRINT_URL="https://www.shaftnet.org/~pizza/gutenprint-5.3.4-20230113102352.tar.xz"
+# Official Gutenprint release (versioned, stable URL). 5.3.5 supports the QW410.
+GUTENPRINT_VERSION="5.3.5"
+GUTENPRINT_URL="https://downloads.sourceforge.net/project/gimp-print/gutenprint-5.3/${GUTENPRINT_VERSION}/gutenprint-${GUTENPRINT_VERSION}.tar.xz"
 
 say()  { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[33mWARN: %s\033[0m\n' "$*" >&2; }
@@ -85,9 +87,13 @@ else
   BUILD="$(mktemp -d)"
   trap 'rm -rf "$BUILD"' EXIT
   cd "$BUILD"
-  wget -q --show-progress -O gutenprint.tar.xz "$GUTENPRINT_URL"
-  tar -xJf gutenprint.tar.xz
-  cd gutenprint-5.3.4-*
+  if ! wget -O gutenprint.tar.xz "$GUTENPRINT_URL"; then
+    die "Could not download Gutenprint. Check the network, and run 'date' - a wrong clock on a fresh Pi breaks HTTPS. Fix with 'sudo timedatectl set-ntp true', then re-run."
+  fi
+  if ! tar -xJf gutenprint.tar.xz; then
+    die "Gutenprint archive is corrupt (partial download). Re-run the installer."
+  fi
+  cd "gutenprint-${GUTENPRINT_VERSION}"
   ./configure --without-doc
   make clean && make -j"$(nproc)"
   make install
